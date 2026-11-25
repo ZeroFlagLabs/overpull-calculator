@@ -1,4 +1,5 @@
 """Overpull Calculator; original calculation engine preserved."""
+from status_bar import CenteredStatusBar
 from pathlib import Path
 import sys,math
 from decimal import Decimal
@@ -162,10 +163,7 @@ class Window(QMainWindow):
         self.result.setSizePolicy(QSizePolicy.Policy.Ignored,QSizePolicy.Policy.Fixed)
         l.addWidget(self.result);root.addWidget(g)
         h=QHBoxLayout();h.addStretch();self.reset=QPushButton("Reset");self.reset.setFixedSize(106,30);self.reset.clicked.connect(self.reset_fields);h.addWidget(self.reset);root.addLayout(h)
-        self.setStatusBar(QStatusBar())
-        self.statusBar().setSizeGripEnabled(False)
-        self.statusBar().setFixedHeight(21)
-        self.statusBar().setStyleSheet("QStatusBar {background:#f0f0f0;color:#243d58;font: 9pt 'Segoe UI';}")
+        self.setStatusBar(CenteredStatusBar(self))
         self.status=self.statusBar()
         self.reset.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         for a,b in zip(self.fields,self.fields[1:]):QWidget.setTabOrder(a,b)

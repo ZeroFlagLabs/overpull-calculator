@@ -1,8 +1,12 @@
 # Overpull Calculator
 
-ZeroFlagLabs | Windows desktop application | v2.0.0
+ZeroFlagLabs | Windows desktop application | v2.0.1
 
 Estimates the allowable axial overpull of a uniform annular cross-section. Version 2.0.0 modernises the original v1.0/v1.1 interface without changing its calculation engine.
+
+## v2.0.1 status bar centring
+
+Vertically centred status text with a stable baseline; standard font, colours, height and message behaviour retained. Calculation engine unchanged.
 
 ## Download
 
