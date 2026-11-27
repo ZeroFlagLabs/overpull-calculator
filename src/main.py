@@ -8,6 +8,7 @@ from PySide6.QtGui import QDesktopServices,QIcon,QRegularExpressionValidator,QSh
 from PySide6.QtWidgets import (QApplication,QMainWindow,QWidget,QLabel,QLineEdit,QGroupBox,QVBoxLayout,QHBoxLayout,QGridLayout,QPushButton,QAbstractSpinBox,QDialogButtonBox,QStatusBar,QStyle,QStyleOptionFrame)
 from PySide6.QtUiTools import QUiLoader
 from dialog_position import exec_centered
+from dialog_theme import apply_dialog_theme, ensure_light_scheme, set_settings_identity
 from calculator import calculate_overpull_force
 HERE=Path(__file__).resolve().parent
 from app_info import APP_TITLE,APP_VERSION,GITHUB_URL
@@ -138,6 +139,7 @@ def parse_factor(t):
 
 class Window(QMainWindow):
     def __init__(self):
+        ensure_light_scheme()
         super().__init__()
         self.update_checker=UpdateChecker(self)
         self.setWindowTitle(TITLE)
@@ -225,6 +227,7 @@ class Window(QMainWindow):
         d.check_on_launch.setChecked(checker.enabled())
         d.check_on_launch.toggled.connect(checker.set_enabled)
         d.check_now_button.clicked.connect(checker.check)
+        set_settings_identity(d, APP_TITLE, APP_VERSION, 'Estimates the allowable axial overpull of a uniform annular cross-section.')
         d.github_link.setText(f'<a href="{GITHUB_URL}">Project on GitHub</a>')
         d.github_link.setOpenExternalLinks(True)
         def refresh():
@@ -238,6 +241,7 @@ class Window(QMainWindow):
             except (RuntimeError,TypeError):pass
         d.open_release_button.clicked.connect(open_release)
         checker.state_changed.connect(refresh);d.finished.connect(disconnect);refresh()
+        apply_dialog_theme(d)
         return d
     def settings(self):
         d=self.make_settings()
@@ -248,7 +252,14 @@ def make_app():
     app=QApplication(sys.argv);app.setStyle("Fusion");app.setWindowIcon(QIcon(str(ICONS/"icon.ico")));return app
 
 if __name__=="__main__":
-    app=make_app();w=Window();w.show()
+    app=make_app()
+    if "--dialogue-test" in sys.argv:
+        from dialogue_acceptance import prepare_scheme
+        prepare_scheme(app)
+    w=Window();w.show()
+    if "--dialogue-test" in sys.argv:
+        from dialogue_acceptance import run_for_window
+        sys.exit(run_for_window(app,w))
     if "--self-test" in sys.argv:
         from runtime_check import run
         sys.exit(run(app,w))
